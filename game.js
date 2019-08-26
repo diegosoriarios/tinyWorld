@@ -69,10 +69,10 @@ update = () => {
 onKeyDown = e => {
     switch(e.keyCode) {
         case 39:
-            world.angle += 15
+            world.angle -= 15
             break
         case 37:
-            world.angle -= 15
+            world.angle += 15
             break
     }
 }
