@@ -51,8 +51,7 @@ init = () => {
     worldImage.onload = () => {
         ctx.drawImage(worldImage, world.x, world.y, WIDTH / 3, WIDTH / 3)
     }
-
-
+    
     for(let i = 0; i < 360; i += 15) {
         if(Math.random() > .9) {
             createItem(degreesToRadians(i))
@@ -138,7 +137,7 @@ createItem = (angle = 0, selected = -1) => {
     let choosedItem = selected === -1 ? itemsAvailable[Math.floor(Math.random() * itemsAvailable.length)] : itemsAvailable[selected]
     let item = {
         //x: WIDTH / 4 + 8, 
-        x: player.x / 2,
+        x: player.x / 2 + 20,
         y: (-HEIGHT / 2) + 112, 
         w: -32, 
         h: -128, 
