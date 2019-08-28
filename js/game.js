@@ -6,15 +6,17 @@ window.addEventListener("resize", onResizeCalled, false);
 let WIDTH = window.innerWidth
 let HEIGHT = window.innerHeight
 let selected = -1
+let itemSelection = 0
+let inventoryIsOpen = false
 
 let worldImage
 
 let inventory = [
-    {'tree': 'green'},
-    {'food': 'red'},
-    {'watter': 'blue'},
-    {'vulcan': 'brown'},
-    {'mountain': 'white'}
+    {type: '', qtd: ''},
+    {type: '', qtd: ''},
+    {type: '', qtd: ''},
+    {type: '', qtd: ''},
+    {type: '', qtd: ''},
 ]
 
 const itemsAvailable = [
@@ -93,9 +95,17 @@ draw = () => {
         ctx.fillRect(16 + ((i * 72)), 32, 64, 64)
     })
 
-    if(selected !== -1) {
+    if(inventoryIsOpen) {
         ctx.fillStyle = "rgba(0, 0,225,0.5)"
-        ctx.fillRect(16 + ((selected * 72)), 32, 64, 64)
+        ctx.fillRect(16 + ((itemSelection * 72)), 32, 64, 64)
+    }
+
+    ctx.fillStyle = "white"
+    ctx.fillRect(16, 106, 64, 64)
+
+    if(selected !== -1) {
+        ctx.fillStyle = "red"
+        ctx.fillRect(16, 106, 64, 64)
     }
 }
 
@@ -108,7 +118,7 @@ update = () => {
 onKeyDown = e => {
     switch(e.keyCode) {
         case keys.left:
-            if(selected === -1) {
+            if(!inventoryIsOpen) {
                 world.angle += 15
                 if(world.angle === 360) {
                     world.angle = 0
@@ -118,10 +128,10 @@ onKeyDown = e => {
                     building.angle %= 2 * Math.PI;
                 })
             } else {
-                if(selected === 0) {
-                    selected = inventory.length - 1 
+                if(itemSelection === 0) {
+                    itemSelection = inventory.length - 1 
                 } else {
-                    selected--
+                    itemSelection--
                 }
             }
             //console.log(radiansToDegrees(world.buildings[0].angle))
@@ -130,7 +140,7 @@ onKeyDown = e => {
             removeItem()
             break
         case keys.right:
-            if(selected === -1) {
+            if(!inventoryIsOpen) {
                 world.angle -= 15
                 if(world.angle === -360) {
                     world.angle = 0
@@ -141,10 +151,10 @@ onKeyDown = e => {
                 })
                 console.log(world)
             } else {
-                if(selected === inventory.length - 1 ) {
-                    selected = 0
+                if(itemSelection === inventory.length - 1 ) {
+                    itemSelection = 0
                 } else {
-                    selected++
+                    itemSelection++
                 }
             }
             break
@@ -152,9 +162,19 @@ onKeyDown = e => {
             if(selected !== -1) createItem()
             break
         case keys.inventory:
-            selected = selected === -1 ? 0 : -1
+            inventoryIsOpen = !inventoryIsOpen
             break
-
+        case keys.select:
+            if(inventoryIsOpen) {
+                selected = itemSelection
+                alert(selected)
+                inventoryIsOpen = false
+            }
+            break
+        case keys.back:
+            inventoryIsOpen = false
+            selected = -1
+            break
     }
 }
 

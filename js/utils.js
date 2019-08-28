@@ -3,7 +3,9 @@ const keys = {
     up:         38,
     right:      39,
     down:       40,
-    inventory:  73
+    inventory:  73,
+    select:     13,
+    back:       27,
 }
 
 degreesToRadians = degrees => {
