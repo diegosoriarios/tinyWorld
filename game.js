@@ -3,8 +3,17 @@ const ctx = canvas.getContext("2d")
 
 let WIDTH = window.innerWidth
 let HEIGHT = window.innerHeight
+let selected = -1
 
 let worldImage
+
+let inventory = [
+    {'tree': 'green'},
+    {'food': 'red'},
+    {'watter': 'blue'},
+    {'vulcan': 'brown'},
+    {'mountain': 'white'}
+]
 
 degreesToRadians = degrees => {
     let pi = Math.PI;
@@ -15,6 +24,14 @@ radiansToDegrees = radians => {
     let pi = Math.PI;
     return radians * (180/pi);
 }
+
+const itemsAvailable = [
+    {'tree': 'green'},
+    {'food': 'red'},
+    {'watter': 'blue'},
+    {'vulcan': 'brown'},
+    {'mountain': 'white'}
+]
 
 const world = {
     //x: WIDTH / 2 - 128,
@@ -79,6 +96,11 @@ draw = () => {
         ctx.translate(-WIDTH / 2, -HEIGHT / 2);
         ctx.restore();
     })
+
+    inventory.forEach((item, i) => {
+        ctx.fillStyle = "white"
+        ctx.fillRect(16 + ((i * 72)), 32, 64, 64)
+    })
 }
 
 update = () => {
@@ -115,20 +137,13 @@ onKeyDown = e => {
             console.log(world)
             break
         case 40: // DOWN
-            createItem()
+            if(selected !== -1) createItem()
             break
     }
 }
 
-createItem = (angle = 0) => {
-    let items = [
-        {'tree': 'green'},
-        {'food': 'red'},
-        {'watter': 'blue'},
-        {'vulcan': 'brown'},
-        {'mountain': 'white'}
-    ]
-    let choosedItem = items[Math.floor(Math.random() * items.length)]
+createItem = (angle = 0, selected = -1) => {
+    let choosedItem = selected === -1 ? itemsAvailable[Math.floor(Math.random() * itemsAvailable.length)] : itemsAvailable[selected]
     let item = {
         x: WIDTH / 4 + 8, 
         y: (-HEIGHT / 2) + 112, 
