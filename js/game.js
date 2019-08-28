@@ -82,7 +82,7 @@ draw = () => {
         ctx.beginPath();
         ctx.rotate(building.angle);
         ctx.fillStyle = building.color;
-        ctx.fillRect((building.x * 2) - WIDTH / 2, (building.y) + (building.h / -4), building.w, building.h);
+        ctx.fillRect((building.x * 2) - WIDTH / 2, (building.y) + (building.h / -4) + 16, building.w, building.h);
         ctx.closePath();
         ctx.translate(-WIDTH / 2, -HEIGHT / 2);
         ctx.restore();
@@ -92,6 +92,11 @@ draw = () => {
         ctx.fillStyle = "white"
         ctx.fillRect(16 + ((i * 72)), 32, 64, 64)
     })
+
+    if(selected !== -1) {
+        ctx.fillStyle = "rgba(0, 0,225,0.5)"
+        ctx.fillRect(16 + ((selected * 72)), 32, 64, 64)
+    }
 }
 
 update = () => {
@@ -102,34 +107,54 @@ update = () => {
 
 onKeyDown = e => {
     switch(e.keyCode) {
-        case 37: // LEFT
-            world.angle += 15
-            if(world.angle === 360) {
-                world.angle = 0
+        case keys.left:
+            if(selected === -1) {
+                world.angle += 15
+                if(world.angle === 360) {
+                    world.angle = 0
+                }
+                world.buildings.forEach(building => {
+                    building.angle += .15 + Math.PI / 180;
+                    building.angle %= 2 * Math.PI;
+                })
+            } else {
+                if(selected === 0) {
+                    selected = inventory.length - 1 
+                } else {
+                    selected--
+                }
             }
-            world.buildings.forEach(building => {
-                building.angle += .15 + Math.PI / 180;
-                building.angle %= 2 * Math.PI;
-            })
             //console.log(radiansToDegrees(world.buildings[0].angle))
             break
-        case 38: // UP
+        case keys.up:
             removeItem()
             break
-        case 39: // RIGHT
-            world.angle -= 15
-            if(world.angle === -360) {
-                world.angle = 0
+        case keys.right:
+            if(selected === -1) {
+                world.angle -= 15
+                if(world.angle === -360) {
+                    world.angle = 0
+                }
+                world.buildings.forEach(building => {
+                    building.angle += -.15 + Math.PI / 180;
+                    building.angle %= 2 * Math.PI;
+                })
+                console.log(world)
+            } else {
+                if(selected === inventory.length - 1 ) {
+                    selected = 0
+                } else {
+                    selected++
+                }
             }
-            world.buildings.forEach(building => {
-                building.angle += -.15 + Math.PI / 180;
-                building.angle %= 2 * Math.PI;
-            })
-            console.log(world)
             break
-        case 40: // DOWN
+        case keys.down: // DOWN
             if(selected !== -1) createItem()
             break
+        case keys.inventory:
+            selected = selected === -1 ? 0 : -1
+            break
+
     }
 }
 
@@ -151,7 +176,7 @@ createItem = (angle = 0, selected = -1) => {
 removeItem = () => {
     world.buildings.forEach(building => {
         let index
-        if(radiansToDegrees(building.angle) > 345 || radiansToDegrees(building.angle) < 15) {
+        if(radiansToDegrees(building.angle) > 350 || radiansToDegrees(building.angle) < 10) {
             index = world.buildings.indexOf(building)
             world.buildings.splice(index, 1)
         }
