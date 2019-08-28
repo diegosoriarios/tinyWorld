@@ -1,6 +1,8 @@
 const canvas = document.getElementById("canvas")
 const ctx = canvas.getContext("2d")
 
+window.addEventListener("resize", onResizeCalled, false);
+
 let WIDTH = window.innerWidth
 let HEIGHT = window.innerHeight
 let selected = -1
@@ -14,16 +16,6 @@ let inventory = [
     {'vulcan': 'brown'},
     {'mountain': 'white'}
 ]
-
-degreesToRadians = degrees => {
-    let pi = Math.PI;
-    return degrees * (pi/180);
-}
-
-radiansToDegrees = radians => {
-    let pi = Math.PI;
-    return radians * (180/pi);
-}
 
 const itemsAvailable = [
     {'tree': 'green'},
@@ -145,7 +137,8 @@ onKeyDown = e => {
 createItem = (angle = 0, selected = -1) => {
     let choosedItem = selected === -1 ? itemsAvailable[Math.floor(Math.random() * itemsAvailable.length)] : itemsAvailable[selected]
     let item = {
-        x: WIDTH / 4 + 8, 
+        //x: WIDTH / 4 + 8, 
+        x: player.x / 2,
         y: (-HEIGHT / 2) + 112, 
         w: -32, 
         h: -128, 
