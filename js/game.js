@@ -1,4 +1,3 @@
-const canvas = document.getElementById("canvas")
 const ctx = canvas.getContext("2d")
 
 window.addEventListener("resize", onResizeCalled, false);
@@ -10,6 +9,7 @@ let itemSelection = 0
 let inventoryIsOpen = false
 
 let worldImage
+let handImage
 
 let inventory = [
     {type: 'watter', qtd: 1},
@@ -53,6 +53,9 @@ init = () => {
     worldImage.onload = () => {
         ctx.drawImage(worldImage, world.x, world.y, WIDTH / 3, WIDTH / 3)
     }
+
+    handImage = new Image()
+    handImage.src = './assets/hand.png'
     
     for(let i = 0; i < 360; i += 15) {
         if(Math.random() > .9) {
@@ -106,12 +109,14 @@ draw = () => {
     }
 
     //Objeto selecionado
-    ctx.strokeStyle = "white"
-    ctx.strokeRect(16, 106, 64, 64)
 
     if(selected !== -1) {
         ctx.fillStyle = "red"
         ctx.fillRect(16, 106, 64, 64)
+    } else {
+        ctx.strokeStyle = "white"
+        ctx.strokeRect(16, 106, 64, 64)
+        ctx.drawImage(handImage, 16, 106, 64, 64)
     }
 }
 
@@ -164,9 +169,8 @@ onKeyDown = e => {
             }
             break
         case keys.down: // DOWN
-            selected = 0
-            if(selected === -1) { 
-                createItem() 
+            if(selected === -1) {
+                alert('Selecione algo antes')
             } else  {
                 let promise = promiseDefault(world.buildings.some(x => { return radiansToDegrees(x.angle) >= 350 || radiansToDegrees(x.angle) <= 10 }))
                 
@@ -216,6 +220,7 @@ createItem = (angle = 0, selected = -1) => {
         type: Object.keys(choosedItem),
         angle: angle
     }
+    selected = -1
     world.buildings.push(item)
 }
 
