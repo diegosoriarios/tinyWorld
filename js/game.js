@@ -15,8 +15,8 @@ let inventory = [
     {type: 'watter', qtd: 1},
     {type: '', qtd: 2},
     {type: '', qtd: 3},
-    {type: '', qtd: 0},
-    {type: '', qtd: 0},
+    {type: '', qtd: 1},
+    {type: '', qtd: 1},
 ]
 
 const itemsAvailable = [
@@ -97,7 +97,7 @@ draw = () => {
                     image.src = "./assets/pine.png"
                     break
             }
-            ctx.drawImage(image, (building.x * 2) - WIDTH / 2, (building.y) + (building.h / -4) + 16, building.w, building.h)
+            ctx.drawImage(image, (building.x * 2) - WIDTH / 2, (building.y) + (building.h / -4) + 16, building.w - 32, building.h)
         }
         ctx.closePath();
         ctx.translate(-WIDTH / 2, -HEIGHT / 2);
@@ -240,22 +240,23 @@ createItem = (angle = 0, selected = -1) => {
 removeItem = () => {
     world.buildings.forEach(building => {
         if(radiansToDegrees(building.angle) > 350 || radiansToDegrees(building.angle) < 10) {
-            index = world.buildings.indexOf(building)
+            let index = world.buildings.indexOf(building)
             getItem(building)
-            if(building.qtd === 0) {
-                world.buildings.splice(index, 1)
-            }
+            world.buildings.splice(index, 1)
         }
     })
 }
 
 getItem = element => {
-    inventory.forEach(item => {
-        if(item.qtd === 0) {
-            item.type = element.type
-            item.qtd++
+    let promise = promiseDefault(inventory.find(item => item.qtd === 0))
+
+    promise.then(spot => {
+        if(spot !== undefined) {
+            spot.type = element.type
+            spot.qtd++
         }
     })
+
 }
 
 init()
