@@ -22,3 +22,9 @@ onResizeCalled = () => {
     canvas.style.width = window.innerWidth + 'px';
     canvas.style.height = window.innerHeight + 'px';
 }
+
+promiseDefault = fun => {
+    return new Promise((res, rej) => {
+        res(fun)
+    })
+}

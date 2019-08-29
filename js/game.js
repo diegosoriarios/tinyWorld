@@ -105,8 +105,9 @@ draw = () => {
         ctx.fillRect(16 + ((itemSelection * 72)), 32, 64, 64)
     }
 
-    ctx.fillStyle = "white"
-    ctx.fillRect(16, 106, 64, 64)
+    //Objeto selecionado
+    ctx.strokeStyle = "white"
+    ctx.strokeRect(16, 106, 64, 64)
 
     if(selected !== -1) {
         ctx.fillStyle = "red"
@@ -154,7 +155,6 @@ onKeyDown = e => {
                     building.angle += -.15 + Math.PI / 180;
                     building.angle %= 2 * Math.PI;
                 })
-                console.log(world)
             } else {
                 if(itemSelection === inventory.length - 1 ) {
                     itemSelection = 0
@@ -164,18 +164,27 @@ onKeyDown = e => {
             }
             break
         case keys.down: // DOWN
+            selected = 0
             if(selected === -1) { 
                 createItem() 
             } else  {
-                createItem(selected = selected)
-                inventory[selected].qtd--
-                for(let i = selected; i < inventory.length - 1; i++) {
-                    if(inventory[i].qtd === 0) {
-                        let aux = inventory[i]
-                        inventory[i] = inventory[i+1]
-                        inventory[i+1] = aux
+                let promise = promiseDefault(world.buildings.some(x => { return radiansToDegrees(x.angle) >= 350 || radiansToDegrees(x.angle) <= 10 }))
+                
+                promise.then(res => {
+                    if(!res) {
+                        createItem(selected = selected)
+                        inventory[selected].qtd--
+                        for(let i = selected; i < inventory.length - 1; i++) {
+                            if(inventory[i].qtd === 0) {
+                                let aux = inventory[i]
+                                inventory[i] = inventory[i+1]
+                                inventory[i+1] = aux
+                            }
+                        }
+                    } else {
+                        alert('Tem algo aqui')
                     }
-                }
+                })
             }
             break
         case keys.inventory:
