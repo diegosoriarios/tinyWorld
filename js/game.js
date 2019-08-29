@@ -12,16 +12,17 @@ let worldImage
 let handImage
 
 let inventory = [
-    {type: 'watter', qtd: 1},
-    {type: '', qtd: 2},
-    {type: '', qtd: 3},
-    {type: '', qtd: 1},
-    {type: '', qtd: 1},
+    {type: 'apple', qtd: 1},
+    {type: 'strawberry', qtd: 2},
+    {type: '', qtd: 0},
+    {type: '', qtd: 0},
+    {type: '', qtd: 0},
 ]
 
 const itemsAvailable = [
     {'tree': 'green'},
-    {'food': 'red'},
+    {'apple': 'red'},
+    {'strawberry': 'darkred'},
     {'watter': 'blue'},
     {'vulcan': 'brown'},
     {'mountain': 'white'}
@@ -90,12 +91,16 @@ draw = () => {
             ctx.fillStyle = building.color;
             ctx.fillRect((building.x * 2) - WIDTH / 2, (building.y) + (building.h / -4) + 16, building.w, building.h);
         } else {
-            let image
+            let image = new Image()
             switch(building.color) {
                 case 'green':
-                    image = new Image()
                     image.src = "./assets/pine.png"
                     break
+                case 'red':
+                    image.src = "./assets/apple.png"
+                    break
+                case 'darkred':
+                    image.src = "./assets/strawberry.png"
             }
             ctx.drawImage(image, (building.x * 2) - WIDTH / 2, (building.y) + (building.h / -4) + 16, building.w - 32, building.h)
         }
@@ -107,6 +112,18 @@ draw = () => {
     inventory.forEach((item, i) => {
         ctx.fillStyle = "white"
         ctx.fillRect(16 + ((i * 72)), 32, 64, 64)
+        let image = new Image()
+        switch(item.type) {
+            case 'tree':
+                image.src = "./assets/pine.png"
+                break
+            case 'apple':
+                image.src = "./assets/apple.png"
+                break
+            case 'strawberry':
+                image.src = "./assets/strawberry.png"
+        }
+        ctx.drawImage(image, 32 + ((i * 72)), 48, 32, 32)
         ctx.fillStyle = "black"
         ctx.font = "20px Arial"
         if(item.qtd > 0) {
@@ -159,7 +176,7 @@ onKeyDown = e => {
             //console.log(radiansToDegrees(world.buildings[0].angle))
             break
         case keys.up:
-            removeItem()
+            catchItems()
             break
         case keys.right:
             if(!inventoryIsOpen) {
@@ -237,7 +254,7 @@ createItem = (angle = 0, selected = -1) => {
     world.buildings.push(item)
 }
 
-removeItem = () => {
+catchItems = () => {
     world.buildings.forEach(building => {
         if(radiansToDegrees(building.angle) > 350 || radiansToDegrees(building.angle) < 10) {
             let index = world.buildings.indexOf(building)
