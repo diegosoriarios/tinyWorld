@@ -208,6 +208,7 @@ onKeyDown = e => {
                         inventory[selected].qtd--
                         for(let i = selected; i < inventory.length - 1; i++) {
                             if(inventory[i].qtd === 0) {
+                                inventory[i].type = ""
                                 let aux = inventory[i]
                                 inventory[i] = inventory[i+1]
                                 inventory[i+1] = aux
@@ -226,9 +227,13 @@ onKeyDown = e => {
             break
         case keys.select:
             if(inventoryIsOpen) {
-                selected = itemSelection
-                alert(selected)
-                inventoryIsOpen = false
+                if(inventory[itemSelection].type !== 0 && inventory[itemSelection].qtd !== 0) {
+                    selected = itemSelection
+                    alert(selected)
+                    inventoryIsOpen = false
+                } else {
+                    console.log(inventory[itemSelection])
+                }
             }
             break
         case keys.back:
