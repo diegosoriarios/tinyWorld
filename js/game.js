@@ -12,11 +12,11 @@ let inventoryIsOpen = false
 let worldImage
 
 let inventory = [
-    {type: '', qtd: ''},
-    {type: '', qtd: ''},
-    {type: '', qtd: ''},
-    {type: '', qtd: ''},
-    {type: '', qtd: ''},
+    {type: 'watter', qtd: 1},
+    {type: '', qtd: 2},
+    {type: '', qtd: 3},
+    {type: '', qtd: 0},
+    {type: '', qtd: 0},
 ]
 
 const itemsAvailable = [
@@ -93,6 +93,11 @@ draw = () => {
     inventory.forEach((item, i) => {
         ctx.fillStyle = "white"
         ctx.fillRect(16 + ((i * 72)), 32, 64, 64)
+        ctx.fillStyle = "black"
+        ctx.font = "20px Arial"
+        if(item.qtd > 0) {
+            ctx.fillText(item.qtd, 16 + ((i * 72)) + 48, 84)
+        }
     })
 
     if(inventoryIsOpen) {
@@ -159,7 +164,19 @@ onKeyDown = e => {
             }
             break
         case keys.down: // DOWN
-            if(selected !== -1) createItem()
+            if(selected === -1) { 
+                createItem() 
+            } else  {
+                createItem(selected = selected)
+                inventory[selected].qtd--
+                for(let i = selected; i < inventory.length - 1; i++) {
+                    if(inventory[i].qtd === 0) {
+                        let aux = inventory[i]
+                        inventory[i] = inventory[i+1]
+                        inventory[i+1] = aux
+                    }
+                }
+            }
             break
         case keys.inventory:
             inventoryIsOpen = !inventoryIsOpen
@@ -198,7 +215,19 @@ removeItem = () => {
         let index
         if(radiansToDegrees(building.angle) > 350 || radiansToDegrees(building.angle) < 10) {
             index = world.buildings.indexOf(building)
-            world.buildings.splice(index, 1)
+            getItem(building)
+            if(building.qtd === 0) {
+                world.buildings.splice(index, 1)
+            }
+        }
+    })
+}
+
+getItem = element => {
+    inventory.forEach(item => {
+        if(item.qtd === 0) {
+            item.type = element.type
+            item.qtd++
         }
     })
 }
