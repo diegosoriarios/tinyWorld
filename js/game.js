@@ -86,8 +86,19 @@ draw = () => {
         ctx.translate(WIDTH / 2, HEIGHT / 2);
         ctx.beginPath();
         ctx.rotate(building.angle);
-        ctx.fillStyle = building.color;
-        ctx.fillRect((building.x * 2) - WIDTH / 2, (building.y) + (building.h / -4) + 16, building.w, building.h);
+        if(building.color !== 'green') {
+            ctx.fillStyle = building.color;
+            ctx.fillRect((building.x * 2) - WIDTH / 2, (building.y) + (building.h / -4) + 16, building.w, building.h);
+        } else {
+            let image
+            switch(building.color) {
+                case 'green':
+                    image = new Image()
+                    image.src = "./assets/pine.png"
+                    break
+            }
+            ctx.drawImage(image, (building.x * 2) - WIDTH / 2, (building.y) + (building.h / -4) + 16, building.w, building.h)
+        }
         ctx.closePath();
         ctx.translate(-WIDTH / 2, -HEIGHT / 2);
         ctx.restore();
@@ -185,6 +196,8 @@ onKeyDown = e => {
                                 inventory[i+1] = aux
                             }
                         }
+
+                        selected = -1
                     } else {
                         alert('Tem algo aqui')
                     }
@@ -210,23 +223,22 @@ onKeyDown = e => {
 
 createItem = (angle = 0, selected = -1) => {
     let choosedItem = selected === -1 ? itemsAvailable[Math.floor(Math.random() * itemsAvailable.length)] : itemsAvailable[selected]
+    let image
     let item = {
         //x: WIDTH / 4 + 8, 
         x: player.x / 2 + 20,
         y: (-HEIGHT / 2) + 112, 
         w: -32, 
         h: -128, 
-        color: Object.values(choosedItem), 
-        type: Object.keys(choosedItem),
+        color: JSON.stringify(Object.values(choosedItem)).replace(/"]|[["]/g, ''), 
+        type: JSON.stringify(Object.keys(choosedItem)).replace(/"]|[["]/g, ''),
         angle: angle
     }
-    selected = -1
     world.buildings.push(item)
 }
 
 removeItem = () => {
     world.buildings.forEach(building => {
-        let index
         if(radiansToDegrees(building.angle) > 350 || radiansToDegrees(building.angle) < 10) {
             index = world.buildings.indexOf(building)
             getItem(building)
