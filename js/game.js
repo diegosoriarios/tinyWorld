@@ -270,15 +270,22 @@ catchItems = () => {
 }
 
 getItem = element => {
-    let promise = promiseDefault(inventory.find(item => item.qtd === 0))
+    let agroup = promiseDefault(inventory.find(item => item.type === element.type))
 
-    promise.then(spot => {
-        if(spot !== undefined) {
-            spot.type = element.type
-            spot.qtd++
+    agroup.then(item => {
+        if(item !== undefined) {
+            item.qtd++
+        } else {
+            promiseDefault(inventory.find(value => value.qtd === 0))
+                .then(spot => {
+                    if(spot !== undefined) {
+                        spot.type = element.type
+                        spot.qtd++
+                    }
+                }
+            )
         }
     })
-
 }
 
 init()
